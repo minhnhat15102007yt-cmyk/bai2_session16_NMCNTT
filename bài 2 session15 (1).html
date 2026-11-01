@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bài 2 session15</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h3 id="bản-thiết-kế-phân-quyền-an-toàn">1. Bản thiết kế phân quyền an toàn</h3>
+<p>Để bảo vệ thông tin nhạy cảm (PII) như số điện thoại và mức lương kỳ vọng của ứng viên, việc phân chia cấp độ truy cập cần tuân thủ nguyên tắc <strong>“Quyền tối thiểu” (Least Privilege)</strong>:<br>
+<strong>Đối tượng</strong><br>
+<strong>Vai trò nghiệp vụ</strong><br>
+<strong>Mức quyền đề xuất</strong><br>
+<strong>Lý do bảo mật &amp; Cơ chế hoạt động</strong><br>
+<strong>Trưởng bộ phận</strong><br>
+Xem CV, đánh giá và để lại nhận xét<br>
+<strong>Commenter</strong> (hoặc Viewer + Suggesting Mode)<br>
+Cho phép thêm bình luận/gợi ý mà <strong>không</strong> thể chỉnh sửa trực tiếp dữ liệu gốc (SĐT, mức lương) hoặc xóa danh sách.<br>
+<strong>Nhân sự quản trị (HR Admin)</strong><br>
+Thêm mới, cập nhật trạng thái tuyển dụng, chỉnh sửa thông tin<br>
+<strong>Editor</strong><br>
+Toàn quyền quản lý dữ liệu để vận hành quy trình tuyển dụng hàng ngày.<br>
+<strong>Ứng viên / Người ngoài / Link chung</strong><br>
+Không có quyền truy cập<br>
+<strong>Restricted</strong> (Tắt hoàn toàn chia sẻ công khai qua đường dẫn)<br>
+Ngăn chặn tuyệt đối việc người ngoài lọt vào tệp dữ liệu nhạy cảm.</p>
+<h3 id="kịch-bản-xử-lý-sự-cố-quy-trình-3-bước">2. Kịch bản xử lý sự cố (Quy trình 3 bước)</h3>
+<p>Khi phát hiện link chứa quyền Editor bị gửi nhầm cho ứng viên bên ngoài, bạn cần thực hiện ngay lập tức các bước xử lý sau để kiểm soát thiệt hại:</p>
+<h4 id="bước-1-thu-hồi-ngay-lập-tức-quyền-truy-cập-của-đối-tượng">Bước 1: Thu hồi ngay lập tức quyền truy cập của đối tượng</h4>
+<ul>
+<li><strong>Thao tác thực hiện:</strong><br>
+1.  Mở tệp Google Sheets, nhấn vào nút <strong>Share (Chia sẻ)</strong> ở góc trên bên phải.<br>
+2.  Tìm kiếm tên hoặc địa chỉ email của ứng viên nhận nhầm link trong danh sách người có quyền.<br>
+3.  Nhấp vào menu thả xuống bên cạnh tên họ và chọn <strong>Remove access (Xóa quyền)</strong>.<br>
+4.  Tại mục <em>General access (Truy cập chung)</em> bên dưới, đảm bảo thiết lập đã chuyển về dạng <strong>Restricted</strong> (Chỉ những người được cấp quyền mới có thể mở) thay vì <em>Anyone with the link</em>.<br>
+<strong>Xác minh thành công:</strong> Kiểm tra lại danh sách chia sẻ, tên của ứng viên đó hoàn toàn biến mất và trạng thái liên kết chung hiển thị là riêng tư.
+<h4 id="bước-2-kiểm-tra-nhật-ký-truy-cập-access-audit-log--activity">Bước 2: Kiểm tra Nhật ký truy cập (Access Audit Log &amp; Activity)</h4>
+</li>
+<li><strong>Thao tác thực hiện:</strong><br>
+1.  Nhấn vào biểu tượng <strong>Activity Dashboard</strong> (hình mũi tên hướng lên đi kèm đường zíc-zắc ở góc trên bên phải Google Sheets).<br>
+2.  Kiểm tra mục <strong>Viewer history</strong> để xem ứng viên đó đã mở file chưa và thời gian truy cập cụ thể là khi nào.<br>
+3.  Nếu bạn sử dụng tài khoản Google Workspace (Doanh nghiệp), hãy yêu cầu IT Admin kiểm tra <strong>Google Workspace Admin Audit Log</strong> để xem tài khoản ngoài đó có thực hiện hành động <strong>Downloaded</strong> (Tải xuống) hay <strong>Copied</strong> (Sao chép) tệp hay không.<br>
+4.  Kiểm tra mục <strong>Version history</strong> (Lịch sử phiên bản) tại <code>File &gt; Version history &gt; See version history</code> để đảm bảo ứng viên đó chưa kịp xóa hoặc thay đổi dữ liệu cấu trúc bảng.</li>
+<li><strong>Xác minh thành công:</strong> Xác định rõ ràng ứng viên có tải tệp về hay không để đưa ra phương án dự phòng pháp lý hoặc thông báo nội bộ phù hợp.</li>
+</ul>
+<pre><code>#### Bước 3: Khóa chặt các kênh rò rỉ tiếp theo và thiết lập bảo vệ nâng cao
+</code></pre>
+<ul>
+<li><strong>Thao tác thực hiện:</strong>
+<ol>
+<li>Tại cửa sổ <strong>Share &gt; Settings (Biểu tượng bánh răng)</strong> ở góc trên bên phải, hãy tích chọn mục:  <strong>“Disable options to download, print, and copy for commenters and viewers”</strong> (Vô hiệu hóa tùy chọn tải xuống, in và sao chép đối với người xem và người nhận xét).</li>
+<li>Nếu nghi ngờ dữ liệu đã bị copy hàng loạt cấu trúc, hãy dùng tính năng <strong>Make a copy</strong> để tạo tệp sạch mới, sau đó phân quyền lại từ đầu cho các trưởng bộ phận và ngừng chia sẻ tệp cũ.</li>
+</ol>
+</li>
+</ul>
+</div>
+</body>
+
+</html>
